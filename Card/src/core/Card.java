@@ -17,7 +17,8 @@ public class Card extends JLabel implements MouseListener{
 	private boolean isOpen;
 	/**牌的位置*/
 	private Point pointer;
-	
+	/**牌所属的组*/
+	private int Group;
 	
 	
 	/**获取数值*/
@@ -52,6 +53,19 @@ public class Card extends JLabel implements MouseListener{
 	public void setPointer(Point pp){
 		pointer=pp;
 	}
+	/**设置所属的组*/
+	public void setGroup(int group){
+		Group=group;
+	}
+	
+	/**获得所属的组*/
+	public int getGroup(){
+		return Group;
+	}
+	
+	
+	
+	
 	/**1，选取牌<br>
 	 * 2，放置牌到下面的牌堆<br>
 	 * 3，放置牌到顶牌堆<br>

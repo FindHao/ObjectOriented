@@ -14,6 +14,7 @@ public class CardStack {
 	/**牌堆AB的标志<br>
 	 * True:是初始化为满的牌堆
 	 * False:是初始化为空的牌堆
+	 * 
 	 * */
 	private boolean isA;
 	/**空牌堆初始化*/
@@ -33,6 +34,7 @@ public class CardStack {
 			tempCard.setColor(a[i]/13);
 			tempCard.setLocation(FULLSTACKLOCATION);
 			tempCard.setOpen(false);
+			tempCard.setGroup(8);
 			cards.add(tempCard);
 		}
 	}

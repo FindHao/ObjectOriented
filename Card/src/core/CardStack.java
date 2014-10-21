@@ -23,18 +23,13 @@ public class CardStack {
 		isA=false;
 	}
 	/**初始有牌的牌堆的初始化
-	 * 程序中的牌值color*13+Num-1，即为最开始初始化的值，即约定0-51为牌值
+	 *程序中的牌值color*13+Num-1，即为最开始初始化的值，即约定0-51为牌值
 	 * */
 	public CardStack(int a[]){
 		cards=new Stack<Card>();
 		isA=true;
 		for(int i=0;i<a.length;i++){
-			Card tempCard=new Card();
-			tempCard.setNum(a[i]%13+1);
-			tempCard.setColor(a[i]/13);
-			tempCard.setLocation(FULLSTACKLOCATION);
-			tempCard.setOpen(false);
-			tempCard.setGroup(8);
+			Card tempCard=new Card(a[i]%13+1,a[i]/13,false,FULLSTACKLOCATION,8);
 			cards.add(tempCard);
 		}
 	}

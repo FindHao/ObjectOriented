@@ -9,7 +9,7 @@ public class CardDump {
 	 * */
 	private int openIndex;
 	public CardDump() {
-		//下面每堆牌最多有13+7个
+		//下面每堆牌最多有13+7-1个
 		cards=new Card[20];
 		len=0;
 		openIndex=0;
@@ -36,5 +36,17 @@ public class CardDump {
 		}
 		return anscards;
 	}
-	
+	/**初始化牌堆
+	 * @param initCards传入的初始化的牌堆
+	 * 记得要翻开一张牌
+	 * */
+	public void Initialize(Card initCards[]){
+		int templen=initCards.length;
+		len=templen;
+		for(int i=0;i<templen;i++){
+			cards[i]=initCards[i];
+		}
+		cards[len-1].setOpen(true);
+		openIndex=len-1;
+	}
 }

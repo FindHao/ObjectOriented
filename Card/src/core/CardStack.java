@@ -1,37 +1,30 @@
 package core;
 
-import java.awt.Point;
+import java.awt.Container;
 import java.util.Stack;
 
 /**提供牌的两个牌堆*/
 public class CardStack {
 	/**初始满牌堆A的位置*/
-	private final Point FULLSTACKLOCATION=new Point(530, 50);
+//	private final Point FULLSTACKLOCATION=new Point(530, 50);
 	/**初始空牌堆B的位置*/
-	private final Point EMPTYSTACKLOCATION=new Point(630,50);
+//	private final Point EMPTYSTACKLOCATION=new Point(630,50);
 	/**牌堆*/
 	Stack<Card>cards;
-	/**牌堆AB的标志<br>
-	 * True:是初始化为满的牌堆
-	 * False:是初始化为空的牌堆
-	 * 
-	 * */
-	private boolean isA;
-	/**空牌堆初始化*/
-	public CardStack() {
+	private int group;
+	
+	Container parentContainer;
+	
+	
+	/**牌堆初始化*/
+	public CardStack(int group,Container aContainer) {
+		
 		cards=new Stack<Card>();
-		isA=false;
+		parentContainer=aContainer;
+		this.group=group;
 	}
-	/**初始有牌的牌堆的初始化
-	 *程序中的牌值color*13+Num-1，即为最开始初始化的值，即约定0-51为牌值
-	 * */
-	public CardStack(int a[]){
-		cards=new Stack<Card>();
-		isA=true;
-		for(int i=0;i<a.length;i++){
-			Card tempCard=new Card(a[i]%13+1,a[i]/13,false,FULLSTACKLOCATION,8);
-			cards.add(tempCard);
-		}
+	public int getGroup(){
+		return group;
 	}
 	public boolean isEmpty(){
 		return cards.empty();
@@ -44,5 +37,17 @@ public class CardStack {
 	public void push(Card aCard){
 		aCard.setOpen(true);
 		cards.push(aCard);
+	}
+	/**牌堆内容的初始化*/
+	public void initialize(Card []initCards){
+		int templen=initCards.length;
+		for(int i=0;i<templen;i++){
+			cards.push(initCards[i]);
+			parentContainer.add(cards.firstElement());
+			cards.firstElement().setLocation(Lib.getPointForGroup(8));
+			parentContainer.validate();
+			parentContainer.repaint();
+		}
+		
 	}
 }

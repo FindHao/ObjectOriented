@@ -8,11 +8,14 @@ public class CardDump {
 	 * 每次加入牌或者移出牌都要更新
 	 * */
 	private int openIndex;
-	public CardDump() {
+	/**组类*/
+	private int group;
+	public CardDump(int group) {
 		//下面每堆牌最多有13+7-1个
 		cards=new Card[20];
 		len=0;
 		openIndex=0;
+		this.group=group;
 	}
 	/**添加一张牌*/
 	public void push(Card card){
@@ -48,5 +51,8 @@ public class CardDump {
 		}
 		cards[len-1].setOpen(true);
 		openIndex=len-1;
+	}
+	public int getGroup(){
+		return group;
 	}
 }

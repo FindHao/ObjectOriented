@@ -1,5 +1,6 @@
 package core;
 
+import java.awt.Container;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
@@ -28,6 +29,7 @@ public class Card extends JLabel implements MouseListener{
 	/**牌所属的组,用来区分不同的牌堆*/
 	private int Group;
 	
+	Container parentContainer;
 	
 	
 	
@@ -44,8 +46,8 @@ public class Card extends JLabel implements MouseListener{
 	 * */
 	public void setOpen(boolean isOpen){
 		this.isOpen=isOpen;
-		setLocation(1,1);
-		
+		setLocation(Lib.getPointForGroup(getGroup()));
+		setBackPicture();
 	};
 	/**获取翻开的状态*/
 	public boolean getOpenState(){
@@ -85,14 +87,16 @@ public class Card extends JLabel implements MouseListener{
 	}
 	
 	/**初始化牌*/
-	public Card(int num,int color,boolean isopen,Point pointer,int group ){
+	public Card(int num,int color,boolean isopen,Point pointer,int group,Container aContainer ){
 		super();
 		setNum(num);
+		setGroup(group);
 		setOpen(isopen);
 		setPointer(pointer);
-		setGroup(group);
 		setColor(color);
-		setBackPicture();
+		parentContainer=aContainer;
+		
+//		setBackPicture();
 	}
 	
 	

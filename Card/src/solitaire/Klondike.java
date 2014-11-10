@@ -16,156 +16,79 @@ import card.Tableau;
 import dataStructures.Queue;
 import dataStructures.Stack;
 
-/**
- * A game of Klondike Solitaire. Klondike is one of the most
- * common forms of Solitaire and is sometimes referred to simply as "Solitaire".
- * This class facilitates the movement of cards between the various stacks and 
- * alerts the user that they have won if the cards are in a winning arrangement.
- * <p>
- * In Klondike Solitaire, 28 cards are dealt into the tableaux and the rest are
- * put in the stock. The user must fill the foundation by suit in sorted order.
- * The user can accomplish this by moving sub-stacks of cards between 
- * tableaux. A substack can only be moved if all of the values of adjacent cards
- * in the substack differ by one and the colors of adjacent cards are different
- * Also for that substack to placed onto a tableau, the value of the  
- * bottom card of the substack must be one less than the top card of the tableau
- * and differ in color. Users may also turn cards from the stock to the waste and
- * use the top card of the waste.
- * 
- * @author Warren Godone-Maresca
- */
 public class Klondike implements MouseListener, MouseMotionListener {
-	/** Holds each of the tableau stacks.									*/
+	/**下面七个牌堆*/
 	protected Tableau[] tableaux;
-
-	/** The stacks of cards that will hold the sorted cards.				*/
+	/**上面四个排好的*/
 	protected Foundation[] foundations;
-
-	/** Holds cards that were not dealt into the tableaux.					*/
+	/**上面那个还没有翻开的牌堆*/
 	protected StackOfCards stock;
-
-	/** Holds cards that are removed from the stock.						*/
+	/**已经翻开的牌*/
 	protected StackOfCards waste;
-
-	/** Holds the cards being moved from stack to stack. 					*/
+	/**准备要移动的牌*/
 	protected StackOfCards inUse;
-
-	/** A reference to the stack in which the current cards in inUse were taken
-	 *  from.																*/
+	/**选中的要移动的牌的起始堆*/
 	protected StackOfCards lastStack;
-
-	/** Whether or not cards below the top cards in the tableaux are initially
-	 * 	hidden.																*/
 	protected boolean initiallyHidden = true;
-
-	/** An extra bit to check if everything has been initialized.	  	    */
+	/**校验位检验是否初始化完毕*/
 	protected boolean initialized;
-
-	/** The width of all cards in the stacks. This is used as a standard for most
-	 *  Measurements such as location of stacks.							*/
+	/**牌的宽度*/
 	protected int cardWidth;
-
-	/** The tableaux' offset.												*/
+	//以下是界面的调整
 	protected int offset;
-
-	/** The y coordinate for the top stacks (stock, waste, & foundations).	*/
 	protected int yCoord;
-
-	/** Holds the number moves that the user has made.						*/
+	/** 选中的要移动的牌数*/
 	protected int moves;
-
-	/** Holds how off-center a the mouse was when it clicks a tableau relative
-	 *  to the cards when the mouse clicks a tableau.						*/
 	protected int deltaX, deltaY;
-
-	/** The {@link Container} in which the game will be played.				*/
 	protected Container container;
 
-	/** Holds cards being moved between stacks and are not in one of the instance
-	 * StackOfCards so that they can be animated.							  */
 	protected Queue<StackOfCards> animationQueue;
-
-	/** Do nothing constructor.												*/
 	public Klondike(){}
-
-	/**
-	 * Instantiates the game with a {@link Container}.
-	 * @param container The Container (such as window or applet) in which the 
-	 * 					game will be played.
-	 */
 	public Klondike(Container container){
 		this.container = container;
-		container.addMouseListener(this); 		//To respond to clicks
-		container.addMouseMotionListener(this); //and dragging.
-		container.setBackground(new Color(0, 180, 0)); //A green color.
-		container.setSize(790, 720);
+		container.addMouseListener(this); 		
+		container.addMouseMotionListener(this); 
+		container.setBackground(new Color(0, 180, 0)); //绿色背景
+		container.setSize(600, 650);
 		container.setPreferredSize(container.getSize());
-
 		yCoord = container.getHeight()/12;
 		cardWidth = 60;
 		offset = cardWidth/2;
-
-		//Instantiates the in use stack and animation queue.
 		inUse = new StackOfCards(0, 0, cardWidth, 0, offset * 3/2);
 		animationQueue = new Queue<StackOfCards>();
-
-		init(); //Initializes all of the stacks.
+		init();
 	}
 
-	/**
-	 * Initializes all of the stacks of cards either directly or from a helper
-	 * method (except for <code>inUse</code>). The <code>tableaux</code> aren't 
-	 * initialized here but the parameters for calling <code>initTableaux</code>
-	 * are.
-	 */
 	protected void init(){
-		//The initial deck.
+		//初始化一个用来分配的牌堆
 		StackOfCards deck = StackOfCards.randomDeck();
-
-		//Calls initTableaux with the random deck and an anonymous array that
-		//holds the initial tableau sizes.
+		//初始化那七堆牌
 		initTableaux(deck, new int[] {1, 2, 3, 4, 5, 6, 7});
-		initStockAndWaste(deck); //Initializes the stock and waste
-		initFoundations(4);		//and foundations
-		initialized = true; //Everything is initialized,
-		container.repaint();//So we repaint.
+		//初始化提供牌堆的牌堆
+		initStockAndWaste(deck);
+		//初始化四个用来接收的牌堆
+		initFoundations(4);	
+		//确定初始化成功
+		initialized = true;
+		container.repaint();
 	}
-
-	/**
-	 * Initializes the size, location, and number tableaux and the cards in each
-	 * tableau.
-	 * 
-	 * @param source	The source deck where all of the cards will be dealt from.
-	 * 					Cards will be removed from the source stack.
-	 * @param initialTableauxSizes 	An array whose length equals the number of
-	 * 								tableaux and each element holds
-	 * 								the number of cards in each tableau.
-	 */
+	/**初始化七个牌堆*/
 	protected void initTableaux(StackOfCards source, int[] initialTableauxSizes){
-		//Sets the number of tableau columns.
 		tableaux = new Tableau[initialTableauxSizes.length];
-
-		//Initializes each tableau
 		for(int i = 0; i < tableaux.length; i++){
-			//Instantiates each tableau
 			tableaux[i] = new Tableau(
 					(cardWidth+10)*(i+1), yCoord + cardWidth*2, cardWidth, offset);
-
-			for(int j = 0; j < initialTableauxSizes[i]; j++){ //Moves cards from
-				tableaux[i].push(source.pop());          //source to tableau
+			for(int j = 0; j < initialTableauxSizes[i]; j++){ 
+				tableaux[i].push(source.pop());          
 				tableaux[i].peek().setHidden(initiallyHidden);
 			}
 		}
-		for(StackOfCards stack : tableaux){ //For each tableau,
-			stack.peek().setHidden(false); //we show the top card.
+		//牌堆顶部的牌反转过来
+		for(StackOfCards stack : tableaux){ 
+			stack.peek().setHidden(false); 
 		}
 	}
 
-	/**
-	 * Initializes the stock and waste. The stock will contain all of the given
-	 * deck.
-	 * @param deck The source of cards for the stock.
-	 */
 	protected void initStockAndWaste(StackOfCards deck){
 		stock = new StackOfCards(cardWidth + 10, yCoord, cardWidth, 0, 0);
 		stock.appendStack(deck); //The stock contains all of its cards.

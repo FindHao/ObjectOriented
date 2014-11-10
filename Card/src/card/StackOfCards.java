@@ -6,59 +6,20 @@ import java.awt.Graphics2D;
 import java.awt.geom.RoundRectangle2D;
 
 import dataStructures.Stack;
-
-/**
- * A {@link Stack} of {@link Card}s. This class has all of the functionality of
- * a typical stack ADT (push, pop, etc.) with some additional features for cards.
- * <p>
- * A <code>StackOfCards</code> object has coordinates for the bottom card in the
- * stack and offset value to set the location of a card relative the card below
- * it in the stack. Additionally, all cards in the stack will have the same size.
- * <p>
- * An empty stack can be instantiated with a constructor. Additionally,
- * the static method <code>randomDeck()</code> can be used to return a new 
- * <code>StackOfCards</code> object filled with 52 cards in random order. Although
- * all cards in that stack will have no size and be located at the origin. However,
- * these values can be set later with appropriate set methods.
- * 
- * @author Warren Godone-Maresca
- */
+/**做大量初始化的工作*/
 public class StackOfCards extends Stack<Card> {
-
-	/** The coordinates of the center of the bottom card.					*/
 	protected int x, y;
-
-	/** The width of all cards in the stack.								*/
 	protected int cardWidth;
-
-	/** The difference in x and y coordinates respectively of a card in the stack
-	 * with the card below it. The bottom card will have coordinates (x,y).	 */
 	protected int offsetX, offsetY;
 
-	/**
-	 * Instantiates an empty <code>StackOfCards</code> where all cards will have
-	 * no size and be  positioned at the origin.
-	 */
 	public StackOfCards(){}
 
 	/**
-	 * Instantiates an empty stackOfCards with given values.<p>
-	 * 
-	 * Note: the height of the cards will be based on the width of cards and the
-	 * dimensions of a standard card.
-	 * 
-	 * @param x			The x coordinate for the center of the card on the 
-	 * 					bottom of the stack.
-	 * @param y			The y coordinate for the center of the card on the 
-	 * 					bottom of the stack.
-	 * @param cardWidth	The width of each card in the stack.
-	 * @param offsetX	The difference in x positions of a card in the stack and
-	 * 					the card below it. If offsetX is passed as 0, then all 
-	 * 					cards will be placed directly on top of each other. If >0,
-	 * 					then the cards will be placed to right of the previous 
-	 * 					card.
-	 * @param offsetY	The difference in y coordinates of a card in the stack
-	 * 					with that of the card below it.
+	 * @param x			
+	 * @param y			卡片中心
+	 * @param cardWidth	卡片宽度
+	 * @param offsetX	上下两个卡片的x距离，如果是0，就表示上面的全部压着下面那个
+	 * @param offsetY	y距离
 	 */
 	public StackOfCards(int x, int y, int cardWidth, int offsetX, int offsetY){
 		this.x = x;
@@ -68,36 +29,21 @@ public class StackOfCards extends Stack<Card> {
 		this.offsetY = offsetY;
 	}
 
-	/**
-	 * Returns a new <code>StackOfCards</code> object with 52 cards where all cards
-	 * are at the origin with no size and are not hidden.
-	 */
+	/**一开始初始化52张牌，然后打乱他们的顺序*/
 	public static StackOfCards randomDeck(){
 		StackOfCards deck = new StackOfCards();
 		deck.fillBySuit();
-		deck.shuffle();           //then shuffled.
+		deck.shuffle();           
 		return deck;
 	}
-
-	/**
-	 * Adds <code>card</code> to this stack. The card's x coordinate will be
-	 * <code>x</code> + (<code>offsetX</code>) * (the previous size). The y
-	 * coordinate will be set similarly (with <code>offsetY</code> used
-	 * instead). The size of <code>card</code> will be set according to 
-	 * <code>cardWidth</code>.
-	 */
+	/**添加牌*/
 	public void push(Card card){
-		//Note: size has not been incremented at this point, it will be incremented
-		//in the super method.
-		//The location of the card is changed to match the stack.
 		card.setLocation(x + offsetX*size, y + offsetY*size);
-		card.setSize(cardWidth); //And so is the size.
+		card.setSize(cardWidth); 
 		super.push(card);
 	}
 
-	/**
-	 * Adds 52 cards by suit.
-	 */
+	/**生成52张牌*/
 	public void fillBySuit(){
 		for(Suit suit : Suit.values()){
 			for(int i = 1; i < 14; i++){
@@ -105,25 +51,13 @@ public class StackOfCards extends Stack<Card> {
 			}
 		}
 	}
-	
-	
-	/**
-	 * Reverses the stack and sets each of the card's location accordingly. The
-	 * new bottom card will be located at (x, y).
-	 */
 	public void reverse(){
 		super.reverse();
-		setLocation(x, y); //The location of each card is updated.
+		setLocation(x, y); 
 	}
 
-	/**
-	 * Reorders all of the cards randomly. The positions of the cards will be
-	 * changed accordingly.
-	 */
+	/**打乱牌的顺序*/
 	public void shuffle(){
-		//First merge shuffle is performed and the Knuth/Fisher-Yates shuffle is.
-		//done. After several tests, these shuffles in this order had the most
-		//uniform odds of some permutation of the cards being selected.
 		head = knuthShuffle(mergeShuffle(head));
 		setLocation(x, y);
 	}
@@ -158,22 +92,12 @@ public class StackOfCards extends Stack<Card> {
 		return head;
 	}
 	
-	
-	/**
-	 * Swaps the data in node1 and node2 between each other.
-	 */
 	private void swap(Node<Card> node1, Node<Card> node2){
 		Card tempCard = node1.getValue();	
 		node1.setValue(node2.getValue());
 		node2.setValue(tempCard);
 	}
 
-	/**
-	 * Shuffles the given list/node by recursively dividing it into two sublists
-	 * of equal length
-	 * @param node
-	 * @return
-	 */
 	private Node<Card> mergeShuffle(Node<Card> node){
 		//Base case. 
 		if(node== null || node.getNext() == null){ //Then there does exists

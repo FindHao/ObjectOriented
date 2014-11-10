@@ -10,20 +10,7 @@ import javax.imageio.ImageIO;
  * Holds suits of stand French playing cards. Methods are included to get
  * the suit's color and draw the suit's symbol.<p>
  * 
- * The images of the suits' symbols are in the public domain and are made by the
- * user F l a n k e r of Wikimedia Commons.<p>
- * <b>Sources:</b>
- * 
- * <li> <a href="http://it.wikipedia.org/wiki/File:Suit_Hearts.svg">Hearts:
- * <code>it.wikipedia.org/wiki/File:Suit_Hearts.svg</code></a>
- * <li> <a href="http://it.wikipedia.org/wiki/File:SuitSpades.svg">Spades:
- * <code>it.wikipedia.org/wiki/File:SuitSpades.svg</code></a>
- * <li> <a href="http://it.wikipedia.org/wiki/File:SuitDiamonds.svg">Diamonds:
- * <code>it.wikipedia.org/wiki/File:SuitDiamonds.svg</code></a>
- * <li> <a href="http://it.wikipedia.org/wiki/File:SuitClubs.svg">Clubs:
- * <code>it.wikipedia.org/wiki/File:SuitClubs.svg</code></a>
- * 
- * @author Warren Godone-Maresca
+ *	spades:黑桃   hearts：红桃 diamonds：方块 clubs：梅花
  */
 public enum Suit {
 	SPADES, HEARTS, DIAMONDS, CLUBS;
@@ -58,8 +45,7 @@ public enum Suit {
 		} catch(IOException e){}
 	}
 
-	/**
-	 * Sets the image for {@link #symbol} depending on this suit.
+	/**根据花色来设置图片
 	 */
 	private void setSymbol(){
 		switch(this){
@@ -78,10 +64,9 @@ public enum Suit {
 		}
 	}
 
-	/**
-	 * Returns the color of the suit based on standard French card suits.
-	 * @return {@link Color#RED} if the suit is HEARTS or DIAMONDS, otherwise
-	 * 			{@link Color#BLACK}.
+	/**返回牌的颜色，
+	 * 红桃，方片：红色
+	 * 黑桃，梅花：黑色
 	 */
 	public Color getColor(){
 		switch(this){
@@ -92,22 +77,13 @@ public enum Suit {
 		}
 	}
 
-	/**
-	 * Draws the suit at a given location with given dimensions.
-	 * @param x The x coordinate of the center of the drawing.
-	 * @param y The y coordinate of the center of the drawing.
-	 * @param width The width of the image. The height of the image is calculated
-	 * 			based on this width. Overall, the image will be roughly a square.
-	 */
+	/**在指定位置画上花色*/
 	public void draw(Graphics pane, int x, int y, int width){
-		if(symbol == null){ //Then the symbol needs to be set.
+		if(symbol == null){ 
 			setSymbol();
 		}
-
-		double scale = width * 1.0 / symbol.getWidth(null); //To scale the image
-		int height = (int)(symbol.getHeight(null) * scale); //to the given size.
-
-		//Draws the image
+		double scale = width * 1.0 / symbol.getWidth(null); 
+		int height = (int)(symbol.getHeight(null) * scale); 
 		pane.drawImage(symbol, x - width/2, y - height/2, width, height, null);
 	}
 }

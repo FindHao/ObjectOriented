@@ -82,12 +82,10 @@ public class Tableau extends StackOfCards {
 		}
 		return true; 
 	}
-
 	public static boolean inSequence(Stack<Card> stack){
 		if(stack.size() < 2){
 			return true;
 		}
-
 		Stack<Card> copy = stack.copy();
 		Card toCompare = copy.pop(); 
 

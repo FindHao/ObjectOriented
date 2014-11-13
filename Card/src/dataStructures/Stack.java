@@ -5,7 +5,7 @@ public class Stack<T> implements StackADT<T> {
 	protected Node<T> head;
 	protected int size = 0;
 
-	public Stack(){} //There is nothing to initialize.
+	public Stack(){} 
 	public void push(T value){
 		if(head == null){ 
 			head = new Node<T>(value, null);
